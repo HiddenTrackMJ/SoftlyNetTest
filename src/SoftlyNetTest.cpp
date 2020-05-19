@@ -4,17 +4,23 @@
   @time: 12:01
  */
 
-
+#include "config.h"
 #include "SoftlyNetTest.h"
 #include "seeker/logger.h"
+#include "cmdopts.hpp"
+#include "Server.h"
+#include "Client.h"
+
 
 #include <iostream>
 #include <memory>
+#include <thread>
 
 using std::cout;
 using std::endl;
 using std::shared_ptr;
 
+cxxopts::ParseResult parse(int argc, char* argv[]);
 
 class A {
  public:
@@ -25,19 +31,34 @@ class A {
          << "destructed" << endl;
   }
 };
-int main() {
+int main(int argc, char* argv[]) {
   seeker::Logger::init();
-  shared_ptr<A> sp1(new A(2));  // A(2)由sp1托管，
-  shared_ptr<A> sp2(sp1);       // A(2)同时交由sp2托管
-  shared_ptr<A> sp3;
-  sp3 = sp2;  // A(2)同时交由sp3托管
-  cout << sp1->i << "," << sp2->i << "," << sp3->i << endl;
-  A* p = sp3.get();        // get返回托管的指针，p 指向 A(2)
-  cout << p->i << endl;    //输出 2
-  sp1.reset(new A(3));     // reset导致托管新的指针, 此时sp1托管A(3)
-  sp2.reset(new A(4));     // sp2托管A(4)
-  cout << sp1->i << endl;  //输出 3
-  sp3.reset(new A(5));     // sp3托管A(5),A(2)无人托管，被delete
-  cout << "end" << endl;
+
+  auto res = parse(argc, argv);
+
+  if (res.count("server")) {
+    Udp_Server server;
+    std::thread recv_thread(&Udp_Server::recvThread, &server);
+    while (1) {
+      std::string input;
+      std::cin >> input;
+      if (input == "end") break;
+      server.sendMsg((char*)input.c_str(), input.length());
+    }
+    recv_thread.join();
+  }
+
+  if (res.count("client")) {
+    auto client = Udp_Client();
+    std::thread recv_thread(&Udp_Client::recvThread, &client);
+    while (1) {
+      std::string input;
+      std::cin >> input;
+      if (input == "end") break;
+      client.sendMsg((char*)input.c_str(), input.length());
+    }
+    recv_thread.join();
+  }
+
   return 0;
 }

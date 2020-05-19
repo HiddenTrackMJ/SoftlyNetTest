@@ -13,10 +13,13 @@ project ("SoftlyNetTest")
        "config.h"
 )
 
+ include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 # 将源代码添加到此项目的可执行文件。
 add_executable (SoftlyNetTest
 "src/SoftlyNetTest.cpp" 
- "src/Server.cpp" "src/Client.cpp")
+ "src/Server.cpp" 
+ "src/Client.cpp")
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE

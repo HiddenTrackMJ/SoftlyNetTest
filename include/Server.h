@@ -24,6 +24,8 @@
 #define ERR -1
 #define SOCKET_VERSION MAKEWORD(2, 2)
 
+
+#include "config.h"
 #include <iostream>
 #include "seeker/loggerApi.h"
 #include <stdio.h>
