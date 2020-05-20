@@ -1,0 +1,2 @@
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#define LOG_FILE_NAME "appliaction.log"

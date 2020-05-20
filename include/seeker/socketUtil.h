@@ -15,7 +15,7 @@
 #define SOCKET_ERROR (-1)
 #endif
 
-#define OK 0
+#define GOOD 0
 #define ERR -1
 #define SOCKET_VERSION MAKEWORD(2, 2)
 
@@ -75,7 +75,7 @@ class SocketUtil {
   static void startupWSA() {
 #ifdef _WIN32
     WSADATA wsaData = {};
-    if (WSAStartup(SOCKET_VERSION, &wsaData) != OK) {
+    if (WSAStartup(SOCKET_VERSION, &wsaData) != GOOD) {
       throw std::runtime_error("WSAStartup failed.");
     }
 #else

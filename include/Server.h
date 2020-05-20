@@ -20,7 +20,7 @@
 #define SOCKET_ERROR (-1)
 #endif
 
-#define OK 0
+#define GOOD 0
 #define ERR -1
 #define SOCKET_VERSION MAKEWORD(2, 2)
 
@@ -31,23 +31,29 @@
 #include <stdio.h>
 #include <conio.h>
 
-#define BUFF_LEN 2048
+#include <Message.hpp>
+
+#define SERVER_BUFF_LEN 2048
 
 class Udp_Server {
  public:
-  Udp_Server();
+  Udp_Server(int port);
   ~Udp_Server();
   int init_server();
   void sendMsg(char *msg, int len);
   int recvMsg(char *msg, int len);
+  void replyMsg(Message &msg);
   void recvThread();
 
  private:
   std::string addr = "127.0.0.1";
-  int port = 40440;
+  int listen_port = 40440;
 
   SOCKADDR_IN serverAddr = {0};
-  SOCKADDR_IN clientAddr;
+  SOCKADDR_IN clientAddr = {0};
+
+  int clientAddrSize;
+  std::atomic<int> test_id_gen{1};
 
 #ifdef WIN32
   WSADATA wsaData;

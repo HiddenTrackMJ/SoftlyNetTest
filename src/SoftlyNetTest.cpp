@@ -11,6 +11,9 @@
 #include "Server.h"
 #include "Client.h"
 
+#include <Message.hpp>
+
+
 
 #include <iostream>
 #include <memory>
@@ -31,33 +34,49 @@ class A {
          << "destructed" << endl;
   }
 };
+
+//#undef main
 int main(int argc, char* argv[]) {
   seeker::Logger::init();
 
   auto res = parse(argc, argv);
 
+  uint8_t a[100]{11111};
+  uint16_t b = 0; 
+  std::cout << "before: a: " << (uint32_t)*a << " b: " << (uint32_t)b << std::endl;
+  Tools::readData((uint8_t*)a + 1, b);
+  std::cout << "after: a: " << (uint32_t)*a << " b: " << (uint32_t)b << std::endl;
+
   if (res.count("server")) {
-    Udp_Server server;
+    Udp_Server server(res["port"].as<int>());
     std::thread recv_thread(&Udp_Server::recvThread, &server);
+    recv_thread.detach();
+
     while (1) {
       std::string input;
       std::cin >> input;
       if (input == "end") break;
       server.sendMsg((char*)input.c_str(), input.length());
     }
-    recv_thread.join();
+
   }
 
+ 
   if (res.count("client")) {
-    auto client = Udp_Client();
-    std::thread recv_thread(&Udp_Client::recvThread, &client);
+    auto client = Udp_Client(res["client"].as<string>(), res["port"].as<int>());
+    //std::thread recv_thread(&Udp_Client::recvThread, &client);
+    //recv_thread.detach();
+
+    client.rttTest(20, 64);
+
     while (1) {
       std::string input;
       std::cin >> input;
       if (input == "end") break;
       client.sendMsg((char*)input.c_str(), input.length());
     }
-    recv_thread.join();
+
+    
   }
 
   return 0;
