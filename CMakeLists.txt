@@ -18,6 +18,7 @@ message(STATUS "OpenCV library status:")
 message(STATUS "    version: ${OpenCV_VERSION}")
 message(STATUS "    libraries: ${OpenCV_LIBS}")
 message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
+
 #======================= OpenCv =============================
 
 if(MSVC)
@@ -31,6 +32,12 @@ if(NOT LOG_FILE_NAME)
     set(LOG_FILE_NAME "appliaction.log")
 endif()
 
+#option(LOG_USE_ASYN "LOG_USE_ASYN" ON)
+#set(LOG_THREAD_COUNT 2)
+
+#cmakedefine LOG_USE_ASYN
+#cmakedefine LOG_THREAD_COUNT @LOG_THREAD_COUNT@
+
  configure_file(
        "config.h.in"
        "config.h"
@@ -40,17 +47,19 @@ endif()
 
 # 将源代码添加到此项目的可执行文件。
 add_executable (${PROJECT_NAME}
+"src/SoftlyNetTest.cpp" 
  "src/Server.cpp" 
  "src/Client.cpp")
-
-include_directories(${OpenCV_INCLUDE_DIRS})
-
 
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE
         ${PROJECT_SOURCE_DIR}/include
-        ${OpenCV_LIBS}
+        ${OpenCV_INCLUDE_DIRS}
         )
 
-# TODO: 如有需要，请添加测试并安装目标。
+
+target_link_libraries( ${PROJECT_NAME}  
+	PRIVATE 
+        ${OpenCV_LIBS}
+)

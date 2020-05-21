@@ -1,10 +1,11 @@
-﻿#pragma once
+﻿
 /**
   @author Hidden Track
   @since 2020/05/18
   @time: 19:05
  */
 
+#pragma once
 #ifdef _WIN32
 #include <WinSock2.h>
 #include <WS2tcpip.h>
@@ -21,17 +22,22 @@
 #endif
 
 #define GOOD 0
+//#define OK 0
 #define ERR -1
 #define SOCKET_VERSION MAKEWORD(2, 2)
 
-#include <opencv2/opencv.hpp>
+
 #include "config.h"
+#include <opencv2/opencv.hpp>
+
 #include <iostream>
 #include "seeker/loggerApi.h"
 #include <stdio.h>
 #include <conio.h>
 #include <vector>
-#include <Message.hpp>
+
+
+
 
 
 #define CLIENT_BUFF_LEN 2048
@@ -39,12 +45,21 @@
 class Udp_Client {
  public:
   Udp_Client(std::string ip, int port);
+
   ~Udp_Client();
+
   int init_client();
+
   void sendMsg(char *msg, int len);
+
   int recvMsg(char *msg, int len);
+
   void recvThread();
+
   void rttTest(int testTimes, int packetSize);
+
+  void bandwidthTest(int bw, int pkt_size, int test_time, int report_interval);
+
   void draw();
 
  private:
@@ -56,6 +71,8 @@ class Udp_Client {
 
   SOCKADDR_IN serverAddr = {0};
   SOCKADDR_IN clientAddr;
+
+  cv::Mat X;
 
   bool Udp_Client::polynomial_curve_fit(std::vector<cv::Point>& key_point, int n, cv::Mat& A);
 

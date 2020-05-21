@@ -1,10 +1,10 @@
-#pragma once
 /**
   @author Hidden Track
   @since 2020/05/18
   @time: 14:21
  */
 
+#pragma once
 #ifdef _WIN32
 #include <WinSock2.h>
 #include <WS2tcpip.h>
@@ -30,20 +30,30 @@
 #include "seeker/loggerApi.h"
 #include <stdio.h>
 #include <conio.h>
-
 #include <Message.hpp>
+
+
+
 
 #define SERVER_BUFF_LEN 2048
 
 class Udp_Server {
  public:
   Udp_Server(int port);
+
   ~Udp_Server();
+
   int init_server();
+
   void sendMsg(char *msg, int len);
+
   int recvMsg(char *msg, int len);
+
   void replyMsg(Message &msg);
+
   void recvThread();
+
+  void bwTest(int testSeconds);
 
  private:
   std::string addr = "127.0.0.1";
@@ -51,6 +61,7 @@ class Udp_Server {
 
   SOCKADDR_IN serverAddr = {0};
   SOCKADDR_IN clientAddr = {0};
+  uint16_t currentTest{0};
 
   int clientAddrSize;
   std::atomic<int> test_id_gen{1};
