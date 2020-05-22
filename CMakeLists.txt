@@ -21,6 +21,18 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 
 #======================= OpenCv =============================
 
+#======================= Python =============================
+find_package (Python3 COMPONENTS Interpreter Development REQUIRED)
+ 
+include_directories( ${Python3_INCLUDE_DIRS})
+link_directories(${Python3_LIBRARY_DIRS})
+message(STATUS "Python library status:")
+message(STATUS "    version: ${Python3_VERSION}")
+message(STATUS "    libraries: ${Python3_LIBRARY_DIRS}")
+message(STATUS "    include path: ${Python3_INCLUDE_DIRS}")
+#======================= Python =============================
+
+
 if(MSVC)
     SET(CMAKE_CXX_FLAGS "/EHsc")  # deal with MSVC Warning C4530
 endif(MSVC)

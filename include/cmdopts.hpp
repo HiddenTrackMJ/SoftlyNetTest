@@ -26,7 +26,7 @@ cxxopts::ParseResult parse(int argc, char* argv[]) {
         ("r,rtt", "rtt test", cxxopts::value<bool>())
         ("b,bandwidth", "target bandwidth in Kbits/sec",cxxopts::value<string>()->default_value("256K"), "<speed>")
         ("i,interval", "seconds between periodic bandwidth reports",cxxopts::value<int>()->default_value("1"), "<sec>")
-        ("t,time", "time in seconds to transmit for", cxxopts::value<int>()->default_value("10"), "<sec>")
+        ("t,time", "time in seconds to transmit for", cxxopts::value<int>()->default_value("20"), "<sec>")
         ("h,help", "show this help");
 
     auto result = options.parse(argc, argv);

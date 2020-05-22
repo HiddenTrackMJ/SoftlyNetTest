@@ -36,13 +36,13 @@ std::string formatBandwidth(const uint32_t& bytesPerSecond) {
 
   std::string rst{};
   if (bitsPerSecond > Gbits) {
-    rst = fmt::format("{:.{}f}Gbits/sec", (double)bitsPerSecond / Gbits, 3);
+    rst = fmt::format("{:.{}f}Gbits/s", (double)bitsPerSecond / Gbits, 3);
   } else if (bitsPerSecond > Mbits) {
-    rst = fmt::format("{:.{}f}Mbits/sec", (double)bitsPerSecond / Mbits, 3);
+    rst = fmt::format("{:.{}f}Mbits/s", (double)bitsPerSecond / Mbits, 3);
   } else if (bitsPerSecond > Kbits) {
-    rst = fmt::format("{:.{}f}Kbits/sec", (double)bitsPerSecond / Kbits, 3);
+    rst = fmt::format("{:.{}f}Kbits/s", (double)bitsPerSecond / Kbits, 3);
   } else {
-    rst = fmt::format("{}bits/sec", bitsPerSecond);
+    rst = fmt::format("{}bits/c", bitsPerSecond);
   }
   return rst;
 }
@@ -170,7 +170,7 @@ void Udp_Server::recvThread() {
       throw std::runtime_error("msg receive error.");
     }
   }
-  cout << "lalal" << std::endl;
+  cout << "lalala" << std::endl;
   // while (1) {
   //  memset(buf, 0, SERVER_BUFF_LEN);
   //  int ret = recvMsg(buf, SERVER_BUFF_LEN);
@@ -200,13 +200,16 @@ void Udp_Server::bwTest(int testSeconds) {
 
   while (true) {
     T_LOG("bandwidthTest Waiting msg...");
-    auto recvLen = recvMsg((char*)recvBuf, SERVER_BUFF_LEN);
 
+    
     if (startTimeMs > 0 &&
         Tools::getCurrentTimeMillis() - startTimeMs > testSeconds * 1000 + 5000) {
       W_LOG("Test timeout. testId={}", currentTest);
       break;
     }
+
+    auto recvLen = recvMsg((char*)recvBuf, SERVER_BUFF_LEN);
+
 
     int64_t delay;
     if (recvLen > 0) {
@@ -246,8 +249,8 @@ void Udp_Server::bwTest(int testSeconds) {
             int totalPkt = test_msg.totalTestNum;
             int lossPkt = totalPkt - pktCount;
             I_LOG("bandwidth test report:");
-            I_LOG("[ ID] Interval    Transfer    Bandwidth      Jitter   totlaReceivePkt");
-            I_LOG("[{}]   {}s   {}     {}     {}ms   {}", test_msg.get_test_id(),
+            I_LOG("[ID] Interval    Transfer    Bandwidth      Jitter   totlaReceivePkt");
+            I_LOG("[{}]   {}s     {}  {}  {}ms   {}", test_msg.get_test_id(),
                   (double)passedTimeInMs / 1000, formatTransfer(totalRecvByte),
                   formatBandwidth(totalRecvByte * 1000 / passedTimeInMs),
                   (double)jitter / 1000, pktCount);
@@ -264,7 +267,7 @@ void Udp_Server::bwTest(int testSeconds) {
           } else {
             W_LOG("Got the wrong test_id when recving bw_finish_msg!");
           }
-
+          recvThread();
           break;
         }
 

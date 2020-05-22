@@ -150,10 +150,7 @@ class RttTestMsg : public Message {
   RttTestMsg(int packetSize, int testId, int mid)
       : Message(msgType, testId, mid), payloadLen(packetSize - 15) {}
 
-  void writeData(uint8_t* data, int len) {
-    //if (len < 24) {
-    //  throw new std::runtime_error("invalid argument");
-    //}
+  void writeData(uint8_t* data) {
     writeHead(data);
     Tools::writeData(data + 15, payloadLen);
   }
@@ -192,10 +189,7 @@ class BwTestMsg : public Message {
 
   size_t getLength() { return headLen() + (size_t)payloadLen; }
 
-  void writeData(uint8_t* data, int len) {
-    //if (len < getLength()) {
-    //  throw new std::runtime_error("invalid argument");
-    //}
+  void writeData(uint8_t* data) {
     writeHead(data);
     Tools::writeData(data + 15, payloadLen);
     Tools::writeData(data + 19, testPacketNumber);
@@ -220,9 +214,6 @@ class BwFinishMsg : public Message {
   size_t getLength() { return headLen() + 4; }
 
   void writeData(uint8_t* data, int len) {
-    //if (len < getLength()) {
-    //  throw new std::runtime_error("invalid argument");
-    //}
     writeHead(data);
     Tools::writeData(data + 15, totalTestNum);
   }
@@ -260,9 +251,6 @@ class BandWidthReport : public Message {
   size_t getLength() { return headLen() + 16; }
 
   void writeData(uint8_t* data) {
-    //if (sizeof(data) < getLength()) {
-    //  throw new std::runtime_error("invalid argument");
-    //}
     writeHead(data);
     Tools::writeData(data + 15, jitterMicroSec);
     Tools::writeData(data + 19, receivedPkt);

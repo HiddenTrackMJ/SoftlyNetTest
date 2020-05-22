@@ -40,6 +40,7 @@
 
 
 
+
 #define CLIENT_BUFF_LEN 2048
 
 class Udp_Client {
@@ -60,7 +61,18 @@ class Udp_Client {
 
   void bandwidthTest(int bw, int pkt_size, int test_time, int report_interval);
 
-  void draw();
+ struct BW_Report{
+    int testId;
+    double interval;
+    std::string total_data;
+    double bandwidth;
+    double jitterMicroSec;
+    int loss_pkt;
+    int total_pkt;
+    double datagrams;
+  };
+
+
 
  private:
   std::string server_ip = "127.0.0.1";
@@ -74,7 +86,11 @@ class Udp_Client {
 
   cv::Mat X;
 
-  bool Udp_Client::polynomial_curve_fit(std::vector<cv::Point>& key_point, int n, cv::Mat& A);
+  bool polynomial_curve_fit(std::vector<cv::Point>& key_point, int n, cv::Mat& A);
+
+  BW_Report bwRound(int bw, int pkt_size, int test_time, int report_interval);
+
+    void draw(std::vector<cv::Point> points, std::string name);
 
 #ifdef WIN32
   WSADATA wsaData;

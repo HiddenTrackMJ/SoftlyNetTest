@@ -9,6 +9,7 @@
 #include "cmdopts.hpp"
 #include "Server.h"
 #include "Client.h"
+#include "DrawUtil.hpp"
 
 
 #include <iostream>
@@ -17,12 +18,15 @@
 
 
 cxxopts::ParseResult parse(int argc, char* argv[]);
+//extern void py_init();
+//extern void py_finalize();
 
 
 
 
 int main(int argc, char* argv[]) {
   seeker::Logger::init();
+  py_init();
 
   auto res = parse(argc, argv);
 
@@ -32,19 +36,7 @@ int main(int argc, char* argv[]) {
   //Tools::readData((uint8_t*)a + 1, b);
   //std::cout << "after: a: " << (uint32_t)*a << " b: " << (uint32_t)b << std::endl;
 
-  if (res.count("server")) {
-    Udp_Server server(res["port"].as<int>());
-    std::thread recv_thread(&Udp_Server::recvThread, &server);
-    recv_thread.detach();
 
-    while (1) {
-      std::string input;
-      std::cin >> input;
-      if (input == "end") break;
-      server.sendMsg((char*)input.c_str(), input.length());
-    }
-
-  }
 
  
   if (res.count("client")) {
@@ -71,12 +63,27 @@ int main(int argc, char* argv[]) {
       std::string input;
       std::cin >> input;
       if (input == "end") break;
-      client.sendMsg((char*)input.c_str(), input.length());
+      //client.sendMsg((char*)input.c_str(), input.length());
     }
-
-    
   }
 
+  if (res.count("server")) {
+    Udp_Server server(res["port"].as<int>());
+    std::thread recv_thread(&Udp_Server::recvThread, &server);
+    recv_thread.detach();
+
+    while (1) {
+      std::string input;
+      std::cin >> input;
+      if (input == "end") break;
+      // server.sendMsg((char*)input.c_str(), input.length());
+    }
+  }
+
+  std::cout << "closing..." << std::endl;
+  //py_finalize();
+  Py_Finalize();
+  std::cout << "closing1..." << std::endl;
   throw std::runtime_error("msg receive error.");
 
   return 0;
